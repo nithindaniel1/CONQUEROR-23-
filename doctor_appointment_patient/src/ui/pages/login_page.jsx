@@ -21,6 +21,7 @@ function LoginPage() {
       setIsLoading(false);
       navigate(HOME_ROUTE);
     } catch (e) {
+      alert("User Not Found!");
       setIsLoading(false);
     }
   };

@@ -3,15 +3,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDocs,
-  setDoc,
-} from "firebase/firestore/lite";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore/lite";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { db } from "../../config/firebase";
+import { HOME_ROUTE } from "../../config/routes";
 
 function AppointmentFormPage() {
   const [date, setDate] = useState(dayjs(new Date()));
@@ -21,6 +17,7 @@ function AppointmentFormPage() {
   const [doctor, setdoctor] = useState("");
   const [fee, setfee] = useState(0);
   const [doctors, setDoctors] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getDocs(collection(db, "doctors")).then((res) => {
@@ -47,8 +44,8 @@ function AppointmentFormPage() {
           tokenNumber: appointmentDocs.docs.length + 1,
         }
       );
-      await addDoc(
-        collection(db, "patients", currentUser.email, "appointments"),
+      await setDoc(
+        doc(db, "patients", currentUser.email, "appointments", doctor),
         {
           fullName: fullName,
           age: age,
@@ -60,6 +57,7 @@ function AppointmentFormPage() {
         }
       );
       alert("inserted successfully");
+      navigate(HOME_ROUTE);
     } catch (err) {
       alert(err);
     }
@@ -123,6 +121,10 @@ function AppointmentFormPage() {
               value={doctor}
               onChange={(e) => {
                 setdoctor(e.target.value);
+                const doctor = doctors.filter(
+                  (item) => item.id === e.target.value
+                );
+                setfee(doctor[0].fees);
               }}
             >
               {doctors.map((doctor) => {
@@ -152,6 +154,7 @@ function AppointmentFormPage() {
               Doctor Fee
             </label>
             <TextField
+              disabled
               id="doctorfee"
               variant="outlined"
               size="small"
