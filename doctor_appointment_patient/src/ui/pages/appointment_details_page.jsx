@@ -11,7 +11,7 @@ function AppointmentDetailsPage() {
           </h1>
           <div className="text-center">
             <p className="text-secondary">Your Token</p>
-            <h3 className="text-[4em] font-semibold text-disabled leading-[60px]">
+            <h3 className="text-[4em] font-semibold text-gray-500 leading-[60px]">
               67
             </h3>
           </div>
