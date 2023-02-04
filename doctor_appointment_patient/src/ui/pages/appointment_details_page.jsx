@@ -15,11 +15,15 @@ function AppointmentDetailsPage() {
           <div className="text-center">
             <p className="text-secondary">Your Token</p>
             <h3 className="text-[4em] font-semibold text-success leading-[60px]">
-              {location.state.tokenNumber}
+              {location.state.appointment.tokenNumber}
             </h3>
           </div>
           <div className="w-[280px] mx-auto text-center space-y-2">
-            <Button variant="outlined" color="success" disabled>
+            <Button
+              variant="outlined"
+              color="success"
+              disabled={location.state.appointment.prescription.length === 0}
+            >
               Download Prescription
             </Button>
           </div>

@@ -63,7 +63,7 @@ function HomePage() {
                       <Link
                         to={APPOINTMENT_DETAILS_ROUTE}
                         state={{
-                          tokenNumber: appointment.tokenNumber,
+                          appointment: appointment,
                         }}
                       >
                         View Appointment

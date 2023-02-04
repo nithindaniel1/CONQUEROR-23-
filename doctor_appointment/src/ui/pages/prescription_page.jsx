@@ -16,7 +16,6 @@ function PrescriptionPage() {
 
   const upload = async () => {
     setIsLoading(true);
-    console.log({ location });
     await updateDoc(
       doc(
         db,
