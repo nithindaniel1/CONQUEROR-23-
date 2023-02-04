@@ -1,11 +1,13 @@
 import { Button, TextField } from "@mui/material";
 import React from "react";
+import { useState } from "react";
 import { SIGNUP_ROUTE } from "../../config/routes";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import {auth} from "../../config/firebase"
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -17,7 +19,6 @@ function LoginPage() {
     if (password !== "" && confirmPassword !== "") {
       if (password !== confirmPassword) {
         isValid = false;
-        setError("Passwords does not match");
       }
     }
     return isValid;
@@ -25,18 +26,24 @@ function LoginPage() {
 
 
   const login = (e) => {
+    console.log("clicked")
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
-        console.log("user signed in")
-      })
-      .catch((err) => setError(err.message));
+      console.log("verified")
+
+      }
+      )
+      .catch((err) => console.error(err.message));
   };
+
 console.log(email)
+console.log(password)
+
   return (
     <main className="bg-disabled min-h-screen flex justify-center items-center">
       <div className="rounded-xl bg-white w-[40%] flex justify-center items-center flex-col space-y-4 p-16">
-        <div className="w-[100%] space-y-4">
+        <form className="w-[100%] space-y-4" onSubmit={login}>
           <h1 className="font-[500] text-primary text-3xl">Welcome back</h1>
           <h1 className="text-secondary mt-2">
             Welcome back! Please enter your details
@@ -64,9 +71,11 @@ console.log(email)
               variant="outlined"
               type="password"
               size="small"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <Button variant="contained" className="w-full">
+          <Button variant="contained" className="w-full" type="submit">
             Sign in
           </Button>
           <div className="text-center">
@@ -77,7 +86,7 @@ console.log(email)
               </Button>
             </p>
           </div>
-        </div>
+        </form>
       </div>
     </main>
   );
