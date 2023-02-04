@@ -46,16 +46,23 @@ function HomePage() {
       field: "prescription",
       headerName: "Prescription",
       width: 250,
-      renderCell: (params) => (
-        <Link to={PRESCRIPTION_PAGE_ROUTE}>
-          <Button variant="contained" size="small">
-            Enter Prescription
-          </Button>
-          {/* <Button variant="contained" size="small" color="success" disabled startIcon={ <IoIosDoneAll />}>
+      renderCell: (params) => {
+        return (
+          <Link
+            to={PRESCRIPTION_PAGE_ROUTE}
+            state={{
+              appointment: appointments.filter((item) => item.id === params.id),
+            }}
+          >
+            <Button variant="contained" size="small">
+              Enter Prescription
+            </Button>
+            {/* <Button variant="contained" size="small" color="success" disabled startIcon={ <IoIosDoneAll />}>
             Uploaded
           </Button> */}
-        </Link>
-      ),
+          </Link>
+        );
+      },
     },
   ];
 
