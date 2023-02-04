@@ -1,8 +1,45 @@
 import { Button, TextField } from "@mui/material";
-import React from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
+import { auth } from "../../../../doctor_appointment_patient/src/config/firebase";
 import { LOGIN_PAGE_ROUTE } from "../../config/routes";
 
 function SignupPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const validatePassword = () => {
+    let isValid = true;
+    if (password !== "" && confirmPassword !== "") {
+      if (password !== confirmPassword) {
+        isValid = false;
+        setError("Passwords does not match");
+      }
+    }
+    return isValid;
+  };
+
+  const register = (e) => {
+    e.preventDefault();
+    setError("");
+    if (validatePassword()) {
+      // Create a new user with email and password using firebase
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          console.log(
+            "user created with email:" + email + "password" + password
+          );
+        })
+        .catch((err) => setError(err.message));
+    }
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+  };
+  console.log(email);
+
   return (
     <main className="bg-disabled min-h-screen flex justify-center items-center">
       <div className="rounded-xl bg-white w-[40%] flex justify-center items-center flex-col space-y-4 p-16">
