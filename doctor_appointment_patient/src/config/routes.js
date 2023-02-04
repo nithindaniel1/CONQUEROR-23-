@@ -1,4 +1,5 @@
-export const HOME_PAGE = "/"
-export const LOGIN_PAGE = "/login"
-export const SIGNUP_PAGE = "/signup"
-export const APPOINTMENT_FORM_PAGE = "/appointment"
+export const HOME_ROUTE = "/";
+export const LOGIN_ROUTE = "/login";
+export const SIGNUP_ROUTE = "/signup";
+export const APPOINTMENT_FORM_ROUTE = "/appointment";
+export const APPOINTMENT_DETAILS_ROUTE = "/appointment-details";
