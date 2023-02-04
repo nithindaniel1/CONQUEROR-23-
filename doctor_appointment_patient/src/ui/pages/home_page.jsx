@@ -1,121 +1,22 @@
 import { Button, Card, CardContent, IconButton } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import {
   APPOINTMENT_DETAILS_ROUTE,
   APPOINTMENT_FORM_ROUTE,
 } from "../../config/routes";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore/lite";
+import { db, auth } from "../../config/firebase";
 
 function HomePage() {
-  const columns = [
-    { field: "tokenNumber", headerName: "Token Number", width: 150 },
-    {
-      field: "name",
-      headerName: "Name",
-      width: 250,
-      editable: true,
-    },
-    {
-      field: "gender",
-      headerName: "Gender",
-      width: 150,
-      editable: true,
-    },
-    {
-      field: "age",
-      headerName: "Age",
-      width: 110,
-      editable: true,
-    },
-    {
-      field: "phoneNumber",
-      headerName: "Phone Number",
-      width: 250,
-      editable: true,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      width: 250,
-      editable: true,
-    },
-  ];
+  const [appointments, setAppointments] = useState();
 
-  const rows = [
-    {
-      id: 1,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 1243,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 431,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 15,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 2351,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 51,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 23421,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 541,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-  ];
+  useEffect(() => {
+    getDocs(collection(db, "patients", auth.currentUser.email)).then((res) => {
+      setAppointments(res.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
+  }, []);
 
   return (
     <main className="bg-disabled min-h-screen flex justify-center p-16">
@@ -132,6 +33,36 @@ function HomePage() {
           </Link>
         </div>
         <div className="mt-8 w-full flex flex-col space-y-3 items-center">
+          {appointments.map((appointment) => {
+            return (
+              <Card style={{ width: "70%" }} variant="outlined">
+                <CardContent className="space-y-4">
+                  <h3 className="text-xl font-semibold text-center">
+                    {appointment.doctor}
+                  </h3>
+                  <div>
+                    <div className="flex justify-between items-center">
+                      <p className="text-secondary text-sm">
+                        Date: {appointment.appointmentDate.toDate()}
+                      </p>
+                      <p className="text-secondary text-sm">Dept: Skin</p>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <p className="text-secondary text-sm">Time: 10:00PM</p>
+                      <p className="text-secondary text-sm">Token No: 15</p>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <Button variant="contained" size="small">
+                      <Link to={APPOINTMENT_DETAILS_ROUTE}>
+                        View Appointment
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
           <Card style={{ width: "70%" }} variant="outlined">
             <CardContent className="space-y-4">
               <h3 className="text-xl font-semibold text-center">

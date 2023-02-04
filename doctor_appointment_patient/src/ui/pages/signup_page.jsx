@@ -1,48 +1,40 @@
 import { Button, TextField } from "@mui/material";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import React, { useState } from "react";
-import { auth } from "../../config/firebase";
-import { LOGIN_ROUTE } from "../../config/routes";
+import { useNavigate } from "react-router-dom";
+import { auth, db } from "../../config/firebase";
+import { HOME_ROUTE, LOGIN_ROUTE } from "../../config/routes";
+
 function SignupPage() {
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const validatePassword = () => {
-    let isValid = true;
-    if (password !== "" && confirmPassword !== "") {
-      if (password !== confirmPassword) {
-        isValid = false;
-        setError("Passwords does not match");
-      }
-    }
-    return isValid;
-  };
-
-  const register = (e) => {
+  const register = async (e) => {
     e.preventDefault();
-    if (validatePassword()) {
-      // Create a new user with email and password using firebase
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          console.log(
-            "user created with email:" + email + "password" + password
-          );
-        })
-        .catch((err) => console.log(err.message));
+    try {
+      setIsLoading(true);
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(res.user, {
+        displayName: name,
+      });
+      await setDoc(doc(db, "patients", res.user.email), {
+        email,
+        password,
+        name,
+      });
+      localStorage.setItem("user", res.user);
+      setIsLoading(false);
+      navigate(HOME_ROUTE);
+    } catch (e) {
+      setIsLoading(false);
     }
-
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
   };
-
-  console.log(email);
-
-  console.log(password);
-  console.log(confirmPassword);
 
   return (
     <main className="bg-disabled min-h-screen flex justify-center items-center">
@@ -102,8 +94,13 @@ function SignupPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
-          <Button variant="contained" className="w-full" type="submit">
-            Sign up
+          <Button
+            variant="contained"
+            className="w-full"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading.." : "Sign up"}
           </Button>
           <div className="text-center">
             <p className="text-secondary text-[0.86em]">

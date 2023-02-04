@@ -1,50 +1,29 @@
 import { Button, TextField } from "@mui/material";
-import React from "react";
-import { useState } from "react";
-import { SIGNUP_ROUTE } from "../../config/routes";
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import {auth} from "../../config/firebase"
-import {useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../../config/firebase";
+import { HOME_ROUTE, SIGNUP_ROUTE } from "../../config/routes";
 
 function LoginPage() {
-
   const navigate = useNavigate();
-
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const validatePassword = () => {
-    let isValid = true;
-    if (password !== "" && confirmPassword !== "") {
-      if (password !== confirmPassword) {
-        isValid = false;
-      }
-    }
-    return isValid;
-  };
-
-
-  const login = (e) => {
-    console.log("clicked")
-    navigate('/home')
+  const login = async (e) => {
     e.preventDefault();
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-      console.log("verified")
-
-      }
-      )
-      .catch((err) => console.error(err.message));
+    try {
+      setIsLoading(true);
+      const res = await signInWithEmailAndPassword(auth, email, password);
+      localStorage.setItem("user", res.user);
+      setIsLoading(false);
+      navigate(HOME_ROUTE);
+    } catch (e) {
+      setIsLoading(false);
+    }
   };
-
-console.log(email)
-console.log(password)
 
   return (
     <main className="bg-disabled min-h-screen flex justify-center items-center">
@@ -65,7 +44,6 @@ console.log(password)
               size="small"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-
             />
           </div>
           <div className="space-y-1 flex flex-col">
@@ -81,8 +59,13 @@ console.log(password)
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <Button variant="contained" className="w-full" type="submit">
-            Sign in
+          <Button
+            variant="contained"
+            className="w-full"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading.." : "Sign in"}
           </Button>
           <div className="text-center">
             <p className="text-secondary text-[0.86em]">

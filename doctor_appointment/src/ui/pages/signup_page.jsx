@@ -1,6 +1,6 @@
 import { Button, TextField } from "@mui/material";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../config/firebase";
@@ -28,12 +28,13 @@ function SignupPage() {
         displayName: name,
       });
 
-      const doctorsRef = collection(db, "doctors");
-      await addDoc(doctorsRef, {
+      const doctorsRef = doc(db, "doctors", res.user.email);
+      await setDoc(doctorsRef, {
         email,
         password,
         department,
         fees,
+        name,
       });
 
       localStorage.setItem("user", res.user);
