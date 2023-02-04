@@ -20,7 +20,7 @@ function LoginPage() {
     try {
       const res = await signInWithEmailAndPassword(auth, email, password);
 
-      localStorage.setItem("user", res.user);
+      localStorage.setItem("user", JSON.stringify(res.user));
 
       setIsLoading(false);
 

@@ -1,22 +1,31 @@
 import { Button, IconButton } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import React from "react";
+import { collection, getDocs } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { IoMdLogOut } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { db } from "../../config/firebase";
 import { PRESCRIPTION_PAGE_ROUTE } from "../../config/routes";
 
 function HomePage() {
+  const currentUser = JSON.parse(localStorage.getItem("user"));
+
+  const [appointments, setAppointments] = useState([]);
+
+  useEffect(() => {
+    getDocs(collection(db, "doctors", currentUser.email, "appointments")).then(
+      (res) => {
+        setAppointments(res.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      }
+    );
+  }, []);
+
   const columns = [
     { field: "tokenNumber", headerName: "Token Number", width: 150 },
     {
-      field: "name",
+      field: "fullName",
       headerName: "Name",
       width: 250,
-    },
-    {
-      field: "gender",
-      headerName: "Gender",
-      width: 150,
     },
     {
       field: "age",
@@ -24,12 +33,12 @@ function HomePage() {
       width: 110,
     },
     {
-      field: "phoneNumber",
+      field: "number",
       headerName: "Phone Number",
       width: 250,
     },
     {
-      field: "email",
+      field: "id",
       headerName: "Email",
       width: 250,
     },
@@ -50,97 +59,20 @@ function HomePage() {
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 1243,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 431,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 15,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 2351,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 51,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 23421,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-    {
-      id: 541,
-      tokenNumber: 1,
-      name: "Snow",
-      gender: "Jon",
-      age: 35,
-      phoneNumber: "Jon",
-      email: "Jon",
-    },
-  ];
-
   return (
     <main className="bg-disabled min-h-screen flex justify-center py-12">
       <div className="rounded-xl bg-white w-[90%] flex flex-col p-10 min-h-[50vh] space-y-4">
         <div className="flex justify-between">
           <div>
-            <h4 className="font-semibold">Dr. Koottakaaran</h4>
-            <p className="text-secondary text-sm">
-              Gynocologist, sex consultant
-            </p>
+            <h4 className="font-semibold">Dr. {currentUser.displayName}</h4>
+            <p className="text-secondary text-sm"></p>
           </div>
           <IconButton color="primary" component="label">
             <IoMdLogOut />
           </IconButton>
         </div>
         <DataGrid
-          rows={rows}
+          rows={appointments}
           columns={columns}
           pageSize={10}
           rowsPerPageOptions={[10]}

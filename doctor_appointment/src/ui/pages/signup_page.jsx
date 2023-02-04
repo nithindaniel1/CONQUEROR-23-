@@ -37,7 +37,7 @@ function SignupPage() {
         name,
       });
 
-      localStorage.setItem("user", res.user);
+      localStorage.setItem("user", JSON.stringify(res.user));
 
       setIsLoading(false);
 
