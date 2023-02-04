@@ -1,8 +1,38 @@
 import { Button, TextField } from "@mui/material";
 import React from "react";
 import { SIGNUP_ROUTE } from "../../config/routes";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 
 function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const validatePassword = () => {
+    let isValid = true;
+    if (password !== "" && confirmPassword !== "") {
+      if (password !== confirmPassword) {
+        isValid = false;
+        setError("Passwords does not match");
+      }
+    }
+    return isValid;
+  };
+
+
+  const login = (e) => {
+    e.preventDefault();
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        console.log("user signed in")
+      })
+      .catch((err) => setError(err.message));
+  };
+console.log(email)
   return (
     <main className="bg-disabled min-h-screen flex justify-center items-center">
       <div className="rounded-xl bg-white w-[40%] flex justify-center items-center flex-col space-y-4 p-16">
@@ -20,6 +50,9 @@ function LoginPage() {
               variant="outlined"
               type="email"
               size="small"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+
             />
           </div>
           <div className="space-y-1 flex flex-col">
