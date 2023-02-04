@@ -1,11 +1,8 @@
 import { Button, TextField } from "@mui/material";
-import React from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
+import { auth } from "../../../../doctor_appointment_patient/src/config/firebase";
 import { LOGIN_PAGE_ROUTE } from "../../config/routes";
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
 
 function SignupPage() {
   const [email, setEmail] = useState("");
@@ -41,7 +38,7 @@ function SignupPage() {
     setPassword("");
     setConfirmPassword("");
   };
-  console.log(email)
+  console.log(email);
 
   return (
     <main className="bg-disabled min-h-screen flex justify-center items-center">
@@ -64,9 +61,6 @@ function SignupPage() {
               variant="outlined"
               type="email"
               size="small"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-
             />
           </div>
           <div className="space-y-1 flex flex-col">
