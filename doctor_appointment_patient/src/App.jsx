@@ -4,8 +4,20 @@ import AppointmentFormPage from './ui/pages/appointment_form_page';
 import HomePage from './ui/pages/home_page';
 import LoginPage from './ui/pages/login_page';
 import SignupPage from './ui/pages/signup_page';
+import {  collection, getDocs } from 'firebase/firestore/lite';
+import { db } from './config/firebase';
 
 function App() {
+  async function getCities(db) {
+    const citiesCol = collection(db, 'cities');
+    const citySnapshot = await getDocs(citiesCol);
+    const cityList = citySnapshot.docs.map(doc => doc.data());
+    console.log(cityList)
+    return cityList;
+  }
+
+  getCities(db)
+  
   return (
     <>
       <BrowserRouter>
