@@ -8,8 +8,13 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import {auth} from "../../config/firebase"
+import {useNavigate } from "react-router-dom";
 
 function LoginPage() {
+
+  const navigate = useNavigate();
+
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,6 +32,7 @@ function LoginPage() {
 
   const login = (e) => {
     console.log("clicked")
+    navigate('/home')
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
