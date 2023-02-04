@@ -7,8 +7,8 @@ function LoginPage() {
     <main className='bg-disabled min-h-screen flex justify-center items-center'>
       <div className='rounded-xl bg-white w-[40%] flex justify-center items-center flex-col space-y-4 p-16'>
         <div className='w-[100%] space-y-4'>
-          <h1 className='font-[500] text-primary text-3xl'>Welcome back</h1>
-          <h1 className='text-secondary mt-2'>Welcome back! Please enter your details</h1>
+          <h1 className='font-[500] text-primary text-3xl'>Welcome Back</h1>
+          <h1 className='text-secondary mt-2'>Welcome back! Please enter your details to continue</h1>
           <div className='space-y-1 flex flex-col'>
             <label htmlFor="email" className='text-sm font-semibold'>Email</label>
             <TextField id='email' variant="outlined" type="email" size='small' />
