@@ -17,7 +17,7 @@ function LoginPage() {
     try {
       setIsLoading(true);
       const res = await signInWithEmailAndPassword(auth, email, password);
-      localStorage.setItem("user", res.user);
+      localStorage.setItem("user", JSON.stringify(res.user));
       setIsLoading(false);
       navigate(HOME_ROUTE);
     } catch (e) {

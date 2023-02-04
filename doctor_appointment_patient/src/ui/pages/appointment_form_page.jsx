@@ -3,9 +3,15 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
-import { collection, doc, getDocs, setDoc } from "firebase/firestore/lite";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+} from "firebase/firestore/lite";
 import React, { useEffect, useState } from "react";
-import { auth, db } from "../../config/firebase";
+import { db } from "../../config/firebase";
 
 function AppointmentFormPage() {
   const [date, setDate] = useState(dayjs(new Date()));
@@ -28,8 +34,21 @@ function AppointmentFormPage() {
       const appointmentDocs = await getDocs(
         collection(db, "doctors", doctor, "appointments")
       );
+      const currentUser = JSON.parse(localStorage.getItem("user"));
       await setDoc(
-        doc(db, "doctors", doctor, "appointments", auth.currentUser.email),
+        doc(db, "doctors", doctor, "appointments", currentUser.email),
+        {
+          fullName: fullName,
+          age: age,
+          number: number,
+          doctor: doctor,
+          appointmentDate: date.toDate(),
+          doctorFee: fee,
+          tokenNumber: appointmentDocs.docs.length + 1,
+        }
+      );
+      await addDoc(
+        collection(db, "patients", currentUser.email, "appointments"),
         {
           fullName: fullName,
           age: age,
